@@ -1,0 +1,35 @@
+﻿version: '3'
+
+services:
+  frontend:
+    image: minor2019.azurecr.io/so-frontend-i:1.0
+    container_name: frontend
+    build:
+      context: ./FrontEnd/FrontEnd
+      dockerfile: Dockerfile
+    ports:
+      - "52020:80"
+    environment:
+      api: 'api'
+    depends_on:
+      - api
+
+  api:
+    image: minor2019.azurecr.io/so-webapi-i:1.0
+    container_name: api
+    build:
+      context: ./WebAPI/WebAPI
+      dockerfile: Dockerfile
+    ports:
+      - "52019:80"
+    environment:
+      AnimalDb: 'Server=sqlserver101;Database=AnimalDb;User Id=sa;Password=Geheim_101'
+    depends_on:
+      - sqlserver101
+
+  sqlserver101:
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    container_name: sqlserver101
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Geheim_101
